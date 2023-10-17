@@ -1,0 +1,262 @@
+from google.colab import drive
+drive.mount('/content/gdrive')
+import pandas as pd
+Data = pd.read_excel(r'/content/gdrive/My Drive/Colab Notebooks/MCO_cash_flow_statement.xlsx')
+display(pd.DataFrame(Data))
+import matplotlib.pyplot as plt
+
+free_cash_flow = Data.iloc[18, 1:]  # Exclude the first column (Unnamed: 0)
+free_cash_flow = pd.to_numeric(free_cash_flow, errors='coerce')
+
+plt.figure(figsize=(12, 6))
+plt.bar(Data.columns[1:], free_cash_flow, color='royalblue')
+plt.title('Free Cash Flow Trend')
+plt.xlabel('Year')
+plt.ylabel('Free Cash Flow Value')
+plt.grid(axis='y')
+plt.show()
+
+capital_expenditures = Data.iloc[10, 1:]  # Exclude the first column (Unnamed: 0)
+
+# Convert the values to numeric ( string format)
+capital_expenditures = pd.to_numeric(capital_expenditures, errors='coerce')
+
+plt.figure(figsize=(12, 6))
+plt.bar(Data.columns[1:], capital_expenditures, color='skyblue')
+plt.title('Capital Expenditures Trend')
+plt.xlabel('Year')
+plt.ylabel('Capital Expenditures Value')
+plt.grid(axis='y')
+plt.show()
+
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+plt.figure(figsize=(12, 6))
+plt.bar(Data.columns[1:], free_cash_flow, color='royalblue', label='Free Cash Flow')
+
+#linear regression to the data
+X = np.array(range(len(free_cash_flow))).reshape(-1, 1)
+y = free_cash_flow.values
+reg = LinearRegression().fit(X, y)
+trendline = reg.predict(X)
+
+
+plt.plot(Data.columns[1:], trendline, color='red', linestyle='--', label='Trendline')
+
+plt.title('Free Cash Flow Trend with Trendline')
+plt.xlabel('Year')
+plt.ylabel('Free Cash Flow Value')
+plt.grid(axis='y')
+plt.legend()
+plt.show()
+
+
+Data2 = pd.read_excel(r'/content/gdrive/My Drive/Colab Notebooks/MCO_income_statement.xlsx')
+display(pd.DataFrame(Data2))
+
+revenue = Data2.iloc[0, 1:]
+cost_of_revenue = Data2.iloc[1, 1:]
+gross_profit_margin = Data2.iloc[3, 1:]
+evenue = pd.to_numeric(revenue, errors='coerce')
+cost_of_revenue = pd.to_numeric(cost_of_revenue, errors='coerce')
+gross_profit_margin = pd.to_numeric(gross_profit_margin, errors='coerce')
+
+fig, ax1 = plt.subplots(figsize=(12, 6))
+
+
+ax1.set_xlabel('Year')
+ax1.set_ylabel('Revenue / Cost of Revenue', color='tab:blue')
+ax1.bar(Data2.columns[1:], revenue, color='royalblue', label='Revenue', alpha=0.6)
+ax1.bar(Data2.columns[1:], cost_of_revenue, color='lightcoral', label='Cost of Revenue', alpha=0.6)
+ax1.tick_params(axis='y', labelcolor='tab:blue')
+
+ax2 = ax1.twinx()
+ax2.set_ylabel('Gross Profit Margin %', color='tab:red')
+ax2.plot(Data2.columns[1:], gross_profit_margin, color='tab:red', marker='o', label='Gross Profit Margin %')
+ax2.tick_params(axis='y', labelcolor='tab:red')
+
+plt.title('Revenue, Cost of Revenue, and Gross Profit Margin Trend')
+ax1.set_xlabel('Year')
+lines, labels = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+ax2.legend(lines + lines2, labels + labels2, loc='upper left', bbox_to_anchor=(0.01, 0.99))
+
+plt.grid(True)
+plt.show()
+
+
+net_income = Data2.iloc[20, 1:]
+net_income = pd.to_numeric(net_income, errors='coerce')
+
+plt.figure(figsize=(12, 6))
+plt.bar(Data2.columns[1:], net_income, color='skyblue')
+plt.title('Net Icome Trend')
+plt.xlabel('Year')
+plt.ylabel('Net Icome Value')
+plt.grid(axis='y')
+plt.show()
+
+operating_margin = Data2.iloc[8, 1:]
+operating_margin = pd.to_numeric(operating_margin, errors='coerce')
+
+fig, ax1 = plt.subplots(figsize=(12, 6))
+
+ax1.set_xlabel('Year')
+ax1.set_ylabel('Net Income', color='tab:blue')
+ax1.bar(Data2.columns[1:], net_income, color='royalblue', label='Net Income', alpha=0.6)
+ax1.tick_params(axis='y', labelcolor='tab:blue')
+
+ax2 = ax1.twinx()
+ax2.set_ylabel('Operating Margin %', color='tab:red')
+ax2.plot(Data2.columns[1:], operating_margin, color='tab:red', marker='o', label='Operating Margin %')
+ax2.tick_params(axis='y', labelcolor='tab:red')
+
+
+plt.title('Net Income and Operating Margin')
+ax1.set_xlabel('Year')
+lines, labels = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+ax2.legend(lines + lines2, labels + labels2, loc='upper left', bbox_to_anchor=(0.01, 0.99))
+
+plt.grid(True)
+plt.show()
+
+interest = Data2.iloc[10, 1:] 
+interest = pd.to_numeric(interest, errors='coerce')
+
+plt.figure(figsize=(12, 6))
+plt.bar(Data2.columns[1:], interest, color='royalblue', label='Interest Expense')
+
+X = np.array(range(len(interest))).reshape(-1, 1)
+y = interest.values
+reg = LinearRegression().fit(X, y)
+trendline = reg.predict(X)
+
+plt.plot(Data2.columns[1:], trendline, color='red', linestyle='--', label='Trendline')
+
+plt.title('Interest Expense')
+plt.xlabel('Year')
+plt.ylabel('Interest Expense amount')
+plt.grid(axis='y')
+plt.legend()
+plt.show()
+
+Data3 = pd.read_excel(r'/content/gdrive/My Drive/Colab Notebooks/MCO_balance_sheet.xlsx')
+
+display(pd.DataFrame(Data3))
+
+share_outstanding = Data3.iloc[37, 1:] 
+share_outstanding = pd.to_numeric(share_outstanding, errors='coerce')
+
+plt.figure(figsize=(12, 6))
+plt.bar(Data3.columns[1:], share_outstanding, color='royalblue', label='Share Outstanding')
+
+#linear regression to the data
+X = np.array(range(len(share_outstanding))).reshape(-1, 1)
+y = share_outstanding.values
+reg = LinearRegression().fit(X, y)
+trendline = reg.predict(X)
+
+
+plt.plot(Data3.columns[1:], trendline, color='red', linestyle='--', label='Trendline')
+
+plt.title('Share Outstanding Trendline')
+plt.xlabel('Year')
+plt.ylabel('n. Share Outstanding')
+plt.grid(axis='y')
+plt.legend()
+plt.show()
+
+cash_equivalents = Data3.iloc[2, 1:]
+net_debt = Data3.iloc[30, 1:]
+
+cash_equivalents = pd.to_numeric(cash_equivalents, errors='coerce')
+net_debt = pd.to_numeric(net_debt, errors='coerce')
+
+plt.figure(figsize=(12, 6))
+plt.bar(Data3.columns[1:], cash_equivalents, label='Cash and Cash Equivalents', alpha=0.6)
+plt.bar(Data3.columns[1:], net_debt, label='Net Debt', alpha=0.6)
+plt.xlabel('Year')
+plt.ylabel('Amount')
+plt.title('Cash and Cash Equivalents vs. Net Debt Over Time')
+plt.xticks(rotation=45)
+plt.legend()
+plt.grid(True)
+
+plt.show()
+
+import yfinance as yahooFinance
+import datetime
+%matplotlib inline
+
+start = "1994-11-01"
+end = '2023-10-16'
+
+MCO = yahooFinance.download('MCO',start,end)
+
+MCO['EMA_400'] = MCO['Adj Close'].ewm(span=400, adjust=False).mean()
+MCO['EMA_500'] = MCO['Adj Close'].ewm(span=500, adjust=False).mean()
+MCO['EMA_300'] = MCO['Adj Close'].ewm(span=300, adjust=False).mean()
+
+plt.figure(figsize=(12, 6))
+plt.plot(MCO.index, MCO['Adj Close'], label='MCO Adj Close', color='blue')
+plt.plot(MCO.index, MCO['EMA_400'], label='400-day EMA', color='red')
+plt.plot(MCO.index, MCO['EMA_500'], label='500-day EMA', color='green')
+plt.plot(MCO.index, MCO['EMA_300'], label='300-day EMA', color='orange')
+plt.title('MCO Price with Exponential Moving Averages')
+plt.xlabel('Date')
+plt.ylabel('Price')
+plt.legend()
+plt.show()
+
+MCO['Daily Returns'] = MCO['Adj Close'].pct_change().dropna()
+
+mu = MCO['Daily Returns'].mean()
+sigma = MCO['Daily Returns'].std()
+simulated_returns = np.random.normal(mu, sigma, len(MCO))
+
+positive_returns = MCO['Daily Returns'][MCO['Daily Returns'] > 0]
+negative_returns = MCO['Daily Returns'][MCO['Daily Returns'] < 0]
+
+plt.figure(figsize=(12, 6))
+plt.hist(positive_returns, bins=30, alpha=0.5, color='green', label='Positive Returns')
+plt.hist(negative_returns, bins=30, alpha=0.5, color='red', label='Negative Returns')
+plt.hist(simulated_returns, bins=30, alpha=0.5, color='blue', label='Simulated Gaussian Returns')
+plt.title('MCO Positive and Negative Daily Returns Distribution')
+plt.xlabel('Daily Returns')
+plt.ylabel('Frequency')
+plt.legend()
+plt.show()
+
+pip install ta
+
+from ta import add_all_ta_features
+from ta.momentum import RSIIndicator
+from ta.trend import MACD
+
+start_1 = "2015-10-01"
+end_1 = '2023-10-16'
+MCO_tecnical = yahooFinance.download('MCO', start=start_1, end=end_1)
+
+MCO_tecnical = add_all_ta_features(MCO_tecnical, open="Open", high="High", low="Low", close="Adj Close", volume="Volume")
+MCO_tecnical['RSI'] = RSIIndicator(close=MCO_tecnical['Adj Close']).rsi()
+MCO_tecnical['MACD'] = MACD(close=MCO_tecnical['Adj Close'], window_slow=26, window_fast=12).macd()
+
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(16, 12), sharex=True)
+
+ax1.plot(MCO_tecnical.index, MCO_tecnical['Adj Close'], label='MCO Price', color='blue')
+ax1.set_ylabel('MCO Price', color='blue')
+ax1.legend(loc='upper left')
+
+ax2.plot(MCO_tecnical.index, MCO_tecnical['RSI'], label='RSI', color='green')
+ax2.set_ylabel('RSI', color='green')
+ax2.legend(loc='upper right')
+
+ax3.plot(MCO_tecnical.index, MCO_tecnical['MACD'], label='MACD', color='red')
+ax3.set_xlabel('Date')
+ax3.set_ylabel('MACD', color='red')
+ax3.legend(loc='upper right')
+
+plt.title('MCO Price, RSI, and MACD')
+plt.show()
